@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-TEMP=`mktemp -d`
+TEMP=$(mktemp -d)
 
 function cleanup() {
 	rm -rf "${TEMP}"
@@ -15,7 +15,7 @@ curl -o "${TEMP}/besu-${VERSION}.zip" -L --fail "${URL}"
 unzip -t "${TEMP}/besu-${VERSION}.zip"
 
 echo "Calculating new hash..."
-HASH=`shasum -a 256 ${TEMP}/besu-${VERSION}.zip | cut -d ' ' -f 1`
+HASH=$(shasum -a 256 "${TEMP}"/besu-"${VERSION}".zip | cut -d ' ' -f 1)
 
 cat > besu.rb <<EOF
 class Besu < Formula
@@ -24,14 +24,11 @@ class Besu < Formula
   url "${URL}"
   # update with: ./updateBesu.sh <new-version>
   sha256 "${HASH}"
-
   depends_on :java => "11+"
-
   def install
     prefix.install "lib"
     bin.install "bin/besu"
   end
-
   test do
     system "#{bin}/besu" "--version"
   end
